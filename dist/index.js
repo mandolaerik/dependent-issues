@@ -421,31 +421,30 @@ class IssueManager {
             .trim();
     }
     generateComment(deps, dependencies, config) {
-        const isBlocked = dependencies.some((dep) => dep.blocker);
-        const header = isBlocked
-            ? ':hourglass_flowing_sand: Alright! Looks like we ' +
-                'need to wait for some *dependencies*:'
-            : ':tada: Great news! Looks like all the *dependencies* ' +
-                'have been resolved:';
-        // e.g:
-        // * facebook/react#999
-        // * ~~facebook/react#1~~
-        const dependencyList = deps
-            .map((dep) => {
-            const link = formatDependency(dep);
-            return '* ' + (dep.blocker ? link : `~~${link}~~`);
-        })
-            .join('\n');
-        const dontWorry = isBlocked
-            ? `Don't worry, I will continue watching the list above and ` +
-                'keep this comment updated. '
-            : '';
-        const howToUpdate = 'To add or remove a dependency please update this ' +
-            'issue/PR description.';
-        const footer = `Brought to you by **[${config.actionName}]` +
-            `(${config.actionRepoURL})** (:robot: ). Happy coding!`;
-        const note = ':bulb: ' + dontWorry + howToUpdate;
-        return [header, dependencyList, note, footer].join('\n\n');
+		const isBlocked = dependencies.some((dep) => dep.blocker);
+
+		const header = isBlocked
+			? '## :x: Blocked'
+			: '## :heavy_check_mark: All dependencies resolved';
+
+		// e.g:
+		// * facebook/react#999
+		// * ~~facebook/react#1~~
+		const dependencyList = deps
+			.map((dep) => {
+				const link = formatDependency(dep);
+				return '* ' + (dep.blocker ? link : `~~${link}~~`);
+			})
+			.join('\n');
+
+		const footer =
+		      '----\n' +
+                      'Comment automatically created by ' +
+                      `**[${config.actionName}](${config.actionRepoURL})**. ` +
+		      'To add or remove a dependency, please update this ' +
+		      'issue/PR description.';
+
+		return [header, dependencyList, footer].join('\n\n');
     }
     writeComment(issue, text, create = false) {
         return __awaiter(this, void 0, void 0, function* () {
