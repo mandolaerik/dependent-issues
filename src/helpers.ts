@@ -231,10 +231,8 @@ export class IssueManager {
 		const isBlocked = dependencies.some((dep) => dep.blocker);
 
 		const header = isBlocked
-			? ':hourglass_flowing_sand: Alright! Looks like we ' +
-			  'need to wait for some *dependencies*:'
-			: ':tada: Great news! Looks like all the *dependencies* ' +
-			  'have been resolved:';
+			? '## :x: Blocked'
+			: '## :heavy_check_mark: All dependencies resolved';
 
 		// e.g:
 		// * facebook/react#999
@@ -246,22 +244,14 @@ export class IssueManager {
 			})
 			.join('\n');
 
-		const dontWorry = isBlocked
-			? `Don't worry, I will continue watching the list above and ` +
-			  'keep this comment updated. '
-			: '';
-
-		const howToUpdate =
-			'To add or remove a dependency please update this ' +
-			'issue/PR description.';
-
 		const footer =
-			`Brought to you by **[${config.actionName}]` +
-			`(${config.actionRepoURL})** (:robot: ). Happy coding!`;
+		      '----\n' +
+                      'Comment automatically created by ' +
+                      `**[${config.actionName}](${config.actionRepoURL})**. ` +
+		      'To add or remove a dependency, please update this ' +
+		      'issue/PR description.';
 
-		const note = ':bulb: ' + dontWorry + howToUpdate;
-
-		return [header, dependencyList, note, footer].join('\n\n');
+		return [header, dependencyList, footer].join('\n\n');
 	}
 
 	async writeComment(issue: Issue, text: string, create = false) {
